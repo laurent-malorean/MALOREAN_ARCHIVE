@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mathematica 3 — Malorean Effect</title>
+<style>
+  :root{color-scheme:dark}
+  *{box-sizing:border-box}
+  body{margin:0;background:#0d0c0a;color:#e8e3d6;font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;
+    padding:20px max(16px,env(safe-area-inset-left,0px))}
+  main{max-width:960px;margin:0 auto}
+  h1{font-size:22px;margin:0 0 2px;letter-spacing:-.01em}
+  .sub{color:#988f7c;font:12px ui-monospace,Menlo,Consolas,monospace;margin-bottom:14px}
+  .screen{background:#000;border:1px solid #38352c;aspect-ratio:8/5;width:100%;display:block}
+  canvas{width:100%;height:100%;display:block;image-rendering:pixelated;image-rendering:crisp-edges}
+  #txt{display:none}
+  .bar{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;margin:12px 0}
+  button,select{font:600 13px system-ui,sans-serif;background:#1e1c17;color:#e8e3d6;border:1px solid #38352c;padding:7px 12px;cursor:pointer}
+  button:hover{border-color:#ffa13d}
+  button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid #ffa13d;outline-offset:2px}
+  select{flex:1;min-width:180px;font-weight:400}
+  label{display:flex;align-items:center;gap:8px;color:#988f7c;font-size:12px}
+  input[type=range]{accent-color:#ffa13d;width:130px}
+  .info{background:#1e1c17;border:1px solid #38352c;padding:10px 14px;font-size:13px}
+  .info b{color:#ffa13d}
+  .info p{margin:0;color:#c9c3b3}
+  .foot{color:#988f7c;font-size:12px;margin-top:14px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Mathematica 3</h1>
+  <div class="sub">MALOREAN EFFECT · release novembre 1993 · code Volpone / gfx Toto · port JavaScript de MAT3.PAS</div>
+  <div class="screen"><canvas id="vga" width="320" height="200" aria-label="Écran VGA 320 par 200"></canvas><canvas id="txt" width="640" height="400" aria-label="Page de crédits"></canvas></div>
+  <div class="bar">
+    <button id="prev" title="Scène précédente (←)">⏮</button>
+    <button id="play" title="Pause / lecture (espace)">⏸ Pause</button>
+    <button id="next" title="Scène suivante (→)">⏭</button>
+    <select id="scenes" aria-label="Scène"></select>
+    <label>Vitesse <input type="range" id="speed" min="5" max="120" value="24"><span id="speedv" style="width:56px">24 /s</span></label>
+  </div>
+  <div class="info"><b id="sname"></b><p id="snote"></p></div>
+  <div class="foot">Espace : pause · ← → : changer de scène. Les « Delay » du Pascal sont gardés en temps réel ; la vitesse règle seulement le nombre d'images calculées par seconde.</div>
+</main>
+<div id="err" style="display:none;margin-top:12px;background:#3a1512;border:1px solid #ff7b72;color:#ffb4ac;padding:10px 14px;font:12px/1.5 ui-monospace,Menlo,monospace;white-space:pre-wrap"></div>
+<script>
+window.addEventListener('error',function(e){var d=document.getElementById('err');d.style.display='block';d.textContent+=(e.message||'erreur de chargement')+(e.filename?'\n  '+e.filename.split('/').pop()+':'+e.lineno:'')+(e.target&&e.target.src?'\n  fichier introuvable : '+e.target.src.split('/').pop():'')+'\n';},true);
+</script>
+<script src="palettes.js"></script>
+<script src="images.js"></script>
+<script src="vga.js"></script>
+<script src="mat3.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const vgaCv = $('vga'), txtCv = $('txt'), vga = new VGA(vgaCv);
+const sel = $('scenes');
+SCENES.forEach((s, i) => sel.add(new Option(String(i + 1).padStart(2, '0') + ' · ' + s.name, i)));
+
+let idx = 0, gen = null, paused = false, waitLeft = 0, acc = 0, last = performance.now();
+function start(i) {
+  idx = ((i % SCENES.length) + SCENES.length) % SCENES.length;
+  const s = SCENES[idx];
+  gen = s.run(vga); waitLeft = 0; acc = 0;
+  sel.value = idx; $('sname').textContent = s.name; $('snote').textContent = s.note;
+  txtCv.style.display = s.text ? 'block' : 'none'; vgaCv.style.display = s.text ? 'none' : 'block';
+  if (s.text) drawCredits(txtCv);
+}
+function frame(t) {
+  const dt = Math.min(100, t - last); last = t;
+  if (!paused) {
+    if (waitLeft > 0) waitLeft -= dt;
+    else {
+      acc = Math.min(acc + dt * $('speed').value / 1000, 4);
+      while (acc >= 1) {
+        acc--;
+        const r = gen.next();
+        if (r.done) { start(idx + 1); break; }
+        if (typeof r.value === 'number') { waitLeft = r.value; break; }
+      }
+    }
+  }
+  vga.present();
+  requestAnimationFrame(frame);
+}
+$('prev').onclick = () => start(idx - 1);
+$('next').onclick = () => start(idx + 1);
+sel.onchange = () => start(+sel.value);
+$('play').onclick = () => { paused = !paused; $('play').textContent = paused ? '▶ Lecture' : '⏸ Pause'; };
+$('speed').oninput = e => $('speedv').textContent = e.target.value + ' /s';
+addEventListener('keydown', e => {
+  if (e.target.tagName === 'SELECT') return;
+  if (e.key === ' ') { e.preventDefault(); $('play').click(); }
+  else if (e.key === 'ArrowRight') start(idx + 1);
+  else if (e.key === 'ArrowLeft') start(idx - 1);
+});
+start(0); requestAnimationFrame(frame);
+</script>
+</body>
+</html>

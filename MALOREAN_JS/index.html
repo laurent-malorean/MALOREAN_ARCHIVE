@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Malorean Effect</title>
+<style>
+  /* Colonne de démos à gauche, scène à droite. Fond graphite, accent ambre. */
+  :root{color-scheme:dark;--bg:#0d0c0a;--panel:#171510;--panel2:#1e1c17;--fg:#e8e3d6;--mute:#988f7c;--line:#38352c;--accent:#ffa13d;--ok:#5fd39a;--bad:#ff7b72;--canvas:#0b0a08}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+  .app{display:grid;grid-template-columns:260px minmax(0,1fr);min-height:100vh}
+  aside{background:var(--panel);border-right:1px solid var(--line);padding:18px 12px;position:sticky;top:0;height:100vh;overflow-y:auto}
+  .brand{padding:0 8px 14px;font-weight:700;letter-spacing:.04em}
+  .brand span{display:block;color:var(--mute);font:400 11px ui-monospace,Menlo,Consolas,monospace;letter-spacing:0;margin-top:2px}
+  aside h3{font:600 11px ui-monospace,Menlo,Consolas,monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--mute);margin:16px 8px 6px}
+  aside a,aside .todo{display:block;padding:8px 10px;color:var(--fg);text-decoration:none;border-left:3px solid transparent}
+  aside a:hover{background:var(--panel2)}
+  aside a[aria-current="page"]{background:var(--panel2);border-left-color:var(--accent)}
+  aside a small,aside .todo small{display:block;color:var(--mute);font-size:11px}
+  aside .todo{color:#6d675a}
+  main{padding:22px max(16px,env(safe-area-inset-right,0px)) 40px 22px;min-width:0;max-width:1040px}
+  h1{font-size:24px;margin:0 0 2px;letter-spacing:-.01em}
+  #dd{color:#c9c3b3;margin:0 0 4px;max-width:70ch}
+  .src{color:var(--mute);font:12px ui-monospace,Menlo,Consolas,monospace;margin:0 0 14px}
+  .screen{background:#000;border:1px solid var(--line);aspect-ratio:8/5;width:100%;display:block}
+  .screen.sq{aspect-ratio:1/1}
+  .screen canvas{width:100%;height:100%;display:block}
+  .px{image-rendering:pixelated;image-rendering:crisp-edges}
+  [hidden]{display:none!important}
+  .bar{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:12px 0}
+  button,select,input[type=search]{font:600 13px system-ui,sans-serif;background:var(--panel2);color:var(--fg);border:1px solid var(--line);padding:7px 12px}
+  button{cursor:pointer}button:hover{border-color:var(--accent)}
+  select,input[type=search]{font-weight:400;flex:1;min-width:160px}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  label{display:flex;align-items:center;gap:8px;color:var(--mute);font-size:12px;margin:4px 0}
+  label .n{width:18px;font-family:ui-monospace,Menlo,monospace}
+  input[type=range]{accent-color:var(--accent);flex:1;min-width:90px;max-width:200px}
+  input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px}
+  .rv{font:12px ui-monospace,Menlo,monospace;width:46px;text-align:right;color:var(--fg)}
+  .info,.box{background:var(--panel2);border:1px solid var(--line);padding:10px 14px}
+  .info b{color:var(--accent)}.info p{margin:0;color:#c9c3b3;font-size:13px}
+  .box h2{font:600 11px ui-monospace,Menlo,monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--mute);margin:0 0 6px}
+  .hint{color:var(--mute);font-size:12px;margin:8px 0 0}
+  .two{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px;align-items:start}
+  .col{display:flex;flex-direction:column;gap:12px;min-width:0}
+  table{border-collapse:collapse;width:100%;font:12px ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+  td,th{padding:3px 6px;text-align:right;border-bottom:1px solid var(--line)}th:first-child,td:first-child{text-align:left}th{color:var(--mute);font-weight:500}
+  .yes{color:var(--ok)}.no{color:var(--bad)}.scroll{overflow-x:auto}pre{margin:0;font:12px/1.5 ui-monospace,Menlo,monospace}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+  .th{padding:0;text-align:left;background:var(--panel2);display:block;overflow:hidden}
+  .th img{display:block;width:100%;height:auto;image-rendering:pixelated}
+  .th span{display:block;font:11px ui-monospace,Menlo,monospace;color:var(--mute);padding:4px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;z-index:10;padding:16px;cursor:pointer}
+  .mbox{max-width:min(720px,100%)}.mbox canvas{width:100%;display:block;border:1px solid var(--line)}.mbox p{margin:6px 0 0;color:var(--fg)}
+  .mbox a{color:var(--accent)}
+  #err{display:none;margin:12px 0;background:#3a1512;border:1px solid var(--bad);color:#ffb4ac;padding:10px 14px;font:12px/1.5 ui-monospace,Menlo,monospace;white-space:pre-wrap}
+  .doc{max-width:860px;line-height:1.65}.doc h1{font-size:24px}.doc h2{font-size:19px;margin-top:2em;border-bottom:1px solid var(--line);padding-bottom:4px}.doc h3{font-size:16px;margin-top:1.6em}
+  .doc a{color:var(--accent)}.doc img{max-width:100%;height:auto;image-rendering:auto;background:#fff}.doc table{border-collapse:collapse;margin:1em 0}.doc td,.doc th{text-align:left;vertical-align:top;padding:6px 10px}
+  .doc pre{background:var(--panel2);padding:10px 12px;overflow-x:auto;margin:1em 0}.doc code{font:12.5px ui-monospace,Menlo,monospace;background:var(--panel2);padding:1px 4px}.doc pre code{background:none;padding:0}
+  .doc blockquote{margin:1em 0;padding:2px 14px;border-left:3px solid var(--accent);color:var(--mute)}.doc math{font-size:1.1em}.doc math[display=block]{margin:.8em 0;overflow-x:auto;max-width:100%}
+  @media(max-width:820px){
+    .app{grid-template-columns:minmax(0,1fr)}
+    aside{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:12px max(16px,env(safe-area-inset-left,0px))}
+    aside nav{display:flex;flex-wrap:wrap;gap:4px}aside h3,aside .todo{display:none}
+    aside a{border:1px solid var(--line);border-left-width:1px}aside a small{display:none}
+    main{padding:16px max(16px,env(safe-area-inset-right,0px)) 32px max(16px,env(safe-area-inset-left,0px))}
+    .two{grid-template-columns:minmax(0,1fr)}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="brand">MALOREAN EFFECT<span>archives 1992–1995 · port JavaScript</span></div>
+    <nav id="list"></nav>
+  </aside>
+  <main>
+    <h1 id="dt"></h1>
+    <p id="dd"></p>
+    <p class="src" id="ds"></p>
+    <div id="err"></div>
+    <div id="stage"></div>
+  </main>
+</div>
+
+<script>window.DEMOS = [];
+window.addEventListener('error', function (e) { var d = document.getElementById('err'); d.style.display = 'block';
+  d.textContent += (e.message || 'erreur de chargement') + (e.filename ? '\n  ' + e.filename.split('/').pop() + ':' + e.lineno : '') + (e.target && e.target.src ? '\n  fichier introuvable : ' + e.target.src.split('/').pop() : '') + '\n'; }, true);</script>
+<script src="data/palettes.js"></script>
+<script src="data/palettes_all.js"></script>
+<script src="data/images.js"></script>
+<script src="data/imgs.js"></script>
+<script src="data/pal_mat2.js"></script>
+<script src="data/music.js"></script>
+<script src="data/malo.js"></script>
+<script src="data/allover_text.js"></script>
+<script src="data/gallery.js"></script>
+<script src="data/kashmir.js"></script>
+<script src="data/fortune.js"></script>
+<script src="data/article.js"></script>
+<script src="js/vga.js"></script>
+<script src="js/player.js"></script>
+<script src="js/modplayer.js"></script>
+<script src="js/textmode.js"></script>
+<script src="js/scenedemo.js"></script>
+<script src="demos/mat2_effects.js"></script>
+<script src="demos/mat3_scenes.js"></script>
+<script src="demos/mat2.js"></script>
+<script src="demos/mat3.js"></script>
+<script src="demos/mat1.js"></script>
+<script src="demos/mat5.js"></script>
+<script src="demos/mat6.js"></script>
+<script src="demos/allover.js"></script>
+<script src="demos/flan.js"></script>
+<script src="demos/strange.js"></script>
+<script src="demos/cube.js"></script>
+<script src="demos/fortune.js"></script>
+<script src="demos/kashmir.js"></script>
+<script src="demos/gallery.js"></script>
+<script src="demos/article.js"></script>
+<script>
+// Démos qui ont un source ou des données dans les archives mais pas encore de port.
+const TODO = [
+  ['Belladone', 'Possessed to 3D, 1992, CGA · EXE seul, moteur 3D à lire'],
+];
+const ORDER = ['mat1', 'mat2', 'mat3', 'mat5', 'mat6', 'allover', 'flan', 'fortune', 'strange', 'cube', 'kashmir', 'maths', 'galerie'];
+DEMOS.sort((a, b) => ORDER.indexOf(a.id) - ORDER.indexOf(b.id));
+const $ = id => document.getElementById(id), list = $('list'), stage = $('stage');
+let dispose = null;
+function buildList() {
+  const html = g => DEMOS.filter(d => d.group === g).map(d => `<a href="#${d.id}" data-id="${d.id}">${d.title}<small>${d.year}</small></a>`).join('');
+  list.innerHTML = '<h3>Démos</h3>' + html('demo') + '<h3>Documentation</h3>' + html('doc') + '<h3>Outils</h3>' + html('outil') +
+    '<h3>À porter</h3>' + TODO.map(t => `<div class="todo">${t[0]}<small>${t[1]}</small></div>`).join('');
+}
+function open(id) {
+  const d = DEMOS.find(x => x.id === id) || DEMOS[0];
+  if (dispose) { try { dispose(); } catch (e) {} dispose = null; }
+  stage.innerHTML = ''; $('err').style.display = 'none'; $('err').textContent = '';
+  $('dt').textContent = d.title; $('dd').textContent = d.desc; $('ds').textContent = 'Source : ' + d.source;
+  document.title = d.title + ' · Malorean Effect';
+  list.querySelectorAll('a').forEach(a => a.dataset.id === d.id ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'));
+  try { dispose = d.mount(stage) || null; } catch (e) { $('err').style.display = 'block'; $('err').textContent = d.title + ' : ' + e.message; }
+}
+buildList();
+addEventListener('hashchange', () => open(location.hash.slice(1)));
+open(location.hash.slice(1));
+</script>
+</body>
+</html>
