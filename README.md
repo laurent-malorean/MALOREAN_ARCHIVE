@@ -1,6 +1,19 @@
-Archives de mes production réalisée voila plus de 30 ans su rdes machies plusieurs milliers de fois moins puissantes que nos Mac M4 actuels. 
+# MALOREAN ARCHIVES
 
-A l'époque j'officiais sosu le pseudo de volpone. 
+Archives de mes productions informatiques, réalisées il y a plus de 20 ans pour SIGMA et plus de 30 ans pour les démos, sur des machines des milliers de fois moins puissantes que nos Mac M4 actuels.
+
+Ce dépôt a **deux grands thèmes, sans rapport entre eux** :
+
+| Thème | Époque | Langages | Dossier |
+|---|---|---|---|
+| **La démoscène** : les démos Malorean Effect, leur portage JavaScript et les maths qu'elles utilisent | 1992-1995 | Pascal, assembleur x86, C | [MALOREAN_EFFECT/](MALOREAN_EFFECT/) |
+| **SIGMA** : un simulateur de terminal à conteneurs, issu de ma thèse professionnelle | 2003 | Java, UML, XML | [SIGMA/](SIGMA/README.md) |
+
+---
+
+# Thème 1 : la démoscène (Malorean Effect)
+
+À l'époque, j'officiais sous le pseudo de **volpone**.
 
 ## Qu'est-ce qu'une démo ?
 
@@ -19,10 +32,7 @@ Pour tenir 20 à 30 images par seconde dans ces conditions, les sources combinen
 
 On évitait les calculs coûteux : tables de sinus précalculées, arithmétique entière en virgule fixe plutôt que flottante, animation des couleurs par la palette plutôt que par le redessin de l'image. C'est ce qui explique le lien avec les articles de maths de ce dépôt.
 
-
-
-
-## Contenu du repo
+## Contenu
 
 | Dossier | Contenu |
 |---|---|
@@ -30,6 +40,17 @@ On évitait les calculs coûteux : tables de sinus précalculées, arithmétique
 | &nbsp;&nbsp;[ORIGINAL](MALOREAN_EFFECT/ORIGINAL/README.md) | Les archives d'origine, sans doublons. `DEMO/<nom>/{code, build, ressources}` : une démo = un dossier (sources, exécutables, données, images, musique). `CODE hors demo/` : les essais et bibliothèques qui ne sont pas rattachés à une démo (Pascal, assembleur, C, images de fractales). |
 | &nbsp;&nbsp;[PORTAGE_JS](MALOREAN_EFFECT/PORTAGE_JS/index.html) | Le portage en HTML/JavaScript de toutes les démos, avec les galeries d'images et l'article de maths. Consultable [en ligne](https://claude.ai/artifact/LR7wHQjS4YWbaKbsEe1vQH). Les outils de rétro-ingénierie sont dans `tools/`. |
 | &nbsp;&nbsp;[docs](MALOREAN_EFFECT/docs/math/mathematiques-des-demos.md) | L'article sur les mathématiques utilisées dans les démos, et les PDF d'origine (Strange, Math1, Registre). |
-| **SIGMA/** | Un autre projet, sans rapport avec les démos : SIGMA (2003), un noyau Java de simulation d'un terminal à conteneurs, réalisé au laboratoire PSI de l'INSA de Rouen pour mon mastère au CESI. Seule l'explication est publiée, pas les sources. |
-| &nbsp;&nbsp;[SIGMA.md](SIGMA/SIGMA.md) | Du problème au fonctionnel puis à l'implémentation, avec une lecture « système multi-agents ». |
-| &nbsp;&nbsp;[sigma-explorer.html](SIGMA/sigma-explorer.html) | Page interactive : l'échéancier du simulateur rejoué avec un navire, une grue, des chariots cavaliers et des camions. |
+
+---
+
+# Thème 2 : SIGMA, simulation d'un terminal à conteneurs
+
+**SIGMA** (2003) est un noyau Java de simulation à événements discrets, appliqué à un terminal à conteneurs : des navires, des camions, des grues et des chariots cavaliers dont on teste les stratégies d'exploitation sans toucher au port. Il a été réalisé au laboratoire PSI de l'INSA de Rouen. Ma thèse professionnelle (mastère au CESI de Rouen, soutenue le 14 octobre 2003) porte sur sa version 1.1 : rétro-ingénierie, découplage, stratégies, refactoring. Le noyau d'origine a été conçu par Christophe Mames pour son mémoire d'ingénieur CNAM.
+
+Seule l'explication est publiée. Les sources, le binaire et la documentation d'origine restent dans mes archives privées.
+
+| Fichier | Contenu |
+|---|---|
+| [SIGMA/](SIGMA/README.md) | Présentation du projet et de ses fichiers. |
+| [SIGMA.md](SIGMA/SIGMA.md) | Du problème au fonctionnel puis à l'implémentation, avec une lecture « système multi-agents ». |
+| [sigma-explorer.html](SIGMA/sigma-explorer.html) | Page interactive : l'échéancier du simulateur rejoué avec un navire, une grue, des chariots cavaliers et des camions. |
