@@ -1,0 +1,646 @@
+<title>SIGMA Explorer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one long engineering sheet. A corrugated container-steel band opens the page (the single bold element); everything else stays quiet. A live scheduler sits in the middle. */
+:root{
+  --bg:#eef1f4; --surface:#ffffff; --ink:#15212c; --muted:#546374; --line:#cfd8e0;
+  --accent:#d4470c; --accent-soft:#fbe6dc; --steel:#2f5576; --steel-soft:#dde8f1;
+  --ok:#17803d; --warn:#b26a00; --wait:#8a97a5;
+  --c1:#d4470c; --c2:#2f5576; --c3:#1f8a70; --c4:#8a5a9e; --c5:#9a6b00;
+  --f-display:"Barlow Condensed","Arial Narrow",sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f161d; --surface:#17212b; --ink:#e6edf3; --muted:#9aabbb; --line:#2b3a48;
+  --accent:#ff7a45; --accent-soft:#3a2216; --steel:#7fb0d8; --steel-soft:#1b2d3d;
+  --ok:#4cc27a; --warn:#e0a44a; --wait:#6f7f90;
+  --c1:#ff7a45; --c2:#7fb0d8; --c3:#4fc9a7; --c4:#c79be0; --c5:#e6c15a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f161d; --surface:#17212b; --ink:#e6edf3; --muted:#9aabbb; --line:#2b3a48;
+  --accent:#ff7a45; --accent-soft:#3a2216; --steel:#7fb0d8; --steel-soft:#1b2d3d;
+  --ok:#4cc27a; --warn:#e0a44a; --wait:#6f7f90;
+  --c1:#ff7a45; --c2:#7fb0d8; --c3:#4fc9a7; --c4:#c79be0; --c5:#e6c15a; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--f-body);margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 56px}
+.wrap{max-width:980px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.05;margin:0}
+h2{font-size:clamp(30px,5vw,40px);font-weight:600;letter-spacing:.01em}
+h3{font-size:22px;font-weight:600;letter-spacing:.02em}
+p{margin:0}
+.lead{max-width:65ch;color:var(--muted)}
+.eyebrow{font:500 12px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+code,.mono{font-family:var(--f-mono);font-size:.9em}
+
+/* header */
+.hero{margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:44px max(16px,env(safe-area-inset-left,0px)) 36px;
+  background:repeating-linear-gradient(90deg,var(--accent) 0 14px,color-mix(in srgb,var(--accent) 82%,#000) 14px 18px);color:#fff}
+.hero .wrap{display:grid;gap:12px}
+.hero h1{font-size:clamp(56px,12vw,104px);font-weight:700;letter-spacing:.04em}
+.hero p{font-size:19px;max-width:48ch;color:#fff}
+.hero .meta{font:500 12px/1.5 var(--f-mono);letter-spacing:.06em;opacity:.92}
+
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);
+  margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:0 max(16px,env(safe-area-inset-left,0px))}
+nav .wrap{display:flex;gap:4px;overflow-x:auto}
+nav a{color:var(--muted);text-decoration:none;padding:12px 12px;font:500 14px/1 var(--f-body);white-space:nowrap;border-bottom:2px solid transparent}
+nav a:hover,nav a:focus-visible{color:var(--ink);border-bottom-color:var(--accent);outline:none}
+
+section{padding-top:56px;display:grid;gap:22px;scroll-margin-top:48px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:18px;min-width:0;display:grid;gap:8px;align-content:start}
+.card p{color:var(--muted);font-size:15px}
+.card b{color:var(--ink)}
+.scroll{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:6px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:10px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{font:500 12px/1.2 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--steel-soft)}
+tr:last-child td{border-bottom:0}
+td.bad{color:var(--warn)} td.good{color:var(--ok)}
+
+/* layers */
+.layers{display:grid;gap:6px}
+.layer{display:grid;grid-template-columns:minmax(110px,150px) 1fr;gap:12px;align-items:center;padding:12px 14px;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+.layer strong{font:600 18px/1 var(--f-display);letter-spacing:.03em}
+.layer span{color:var(--muted);font-size:14px}
+.layer:nth-child(1){border-left:4px solid var(--c3)}
+.layer:nth-child(2){border-left:4px solid var(--c2)}
+.layer:nth-child(3){border-left:4px solid var(--c1)}
+.layer:nth-child(4){border-left:4px solid var(--c4)}
+@media (max-width:520px){.layer{grid-template-columns:1fr;gap:4px}}
+
+/* event triplet */
+.event{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.event div{background:var(--surface);padding:12px;display:grid;gap:4px}
+.event small{font:500 11px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.event span{font:500 15px/1.3 var(--f-mono)}
+.event .tri{background:var(--accent-soft)}
+pre{margin:0;padding:14px;background:var(--surface);border:1px solid var(--line);border-radius:6px;overflow-x:auto;font:400 13px/1.55 var(--f-mono);color:var(--ink)}
+.tag{color:var(--steel)} .attr{color:var(--accent)}
+
+/* flow */
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px 12px;display:grid;gap:3px;flex:1 1 150px;min-width:0}
+.step small{font:500 11px/1 var(--f-mono);color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.step span{font-size:14px}
+.step.sys{border-top:3px solid var(--steel)} .step.dep{border-top:3px solid var(--c3)} .step.eq{border-top:3px solid var(--accent)}
+
+/* components */
+.comp{border-top:3px solid var(--steel)}
+.comp h3{color:var(--ink)}
+.comp ul{margin:0;padding-left:18px;color:var(--muted);font-size:14px}
+.comp.c-eq{border-top-color:var(--accent)} .comp.c-dep{border-top-color:var(--c3)} .comp.c-zs{border-top-color:var(--c4)}
+.msg{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font:500 13px/1.4 var(--f-mono);color:var(--muted)}
+.msg b{background:var(--steel-soft);color:var(--ink);padding:3px 8px;border-radius:4px;font-weight:500}
+
+/* simulator */
+.sim{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px;display:grid;gap:16px;min-width:0}
+.controls{display:flex;flex-wrap:wrap;gap:14px 20px;align-items:end}
+.ctl{display:grid;gap:4px;font-size:13px;color:var(--muted)}
+.ctl output{font:500 13px/1 var(--f-mono);color:var(--ink)}
+.ctl input[type=range]{width:150px;accent-color:var(--accent)}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.chk{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--ink);min-height:40px}
+.chk input{accent-color:var(--accent);width:18px;height:18px}
+#scene{width:100%;height:auto;aspect-ratio:800/352;display:block;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+.scrub input{width:100%;accent-color:var(--ink)}
+button{font:500 14px/1 var(--f-body);padding:11px 16px;border-radius:5px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;min-height:40px}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button:hover{filter:brightness(.96)}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--steel);outline-offset:2px}
+button:disabled{opacity:.45;cursor:default}
+.stats{display:flex;flex-wrap:wrap;gap:8px 28px;font:500 13px/1.2 var(--f-mono);color:var(--muted)}
+.stats b{display:block;font:600 28px/1.1 var(--f-display);color:var(--ink);letter-spacing:.02em}
+.caption{background:var(--steel-soft);border-radius:5px;padding:10px 12px;font-size:14px;min-height:44px}
+.caption .mono{color:var(--steel)}
+.tl{overflow-x:auto}
+.tl svg{display:block;min-width:620px;width:100%;height:auto}
+.tl text{font-family:var(--f-mono);fill:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.evt{max-height:340px;overflow:auto;border:1px solid var(--line);border-radius:6px}
+.evt table{font-size:13px}
+.evt td,.evt th{padding:7px 10px;white-space:nowrap}
+.evt td.srv{font-family:var(--f-mono)}
+.evt tr.now td{background:var(--accent-soft)}
+.pill{font:500 11px/1 var(--f-mono);padding:3px 7px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
+.pill.cours{color:var(--warn);border-color:var(--warn)}
+.pill.done{color:var(--ok);border-color:var(--ok)}
+.pill.prete{color:var(--steel);border-color:var(--steel)}
+.note{font-size:13px;color:var(--muted)}
+.sr{position:absolute;left:-9999px}
+footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:14px;display:grid;gap:6px}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="meta">CNAM ROUEN · LABORATOIRE PSI, INSA DE ROUEN · PROJET INTRASEAS</span>
+    <h1>SIGMA</h1>
+    <p>Un noyau Java pour simuler un terminal à conteneurs, où tout se passe par des services demandés à des serveurs.</p>
+  </div>
+</header>
+
+<nav aria-label="Sections"><div class="wrap">
+  <a href="#probleme">Problème</a><a href="#fonction">Fonctionnel</a><a href="#architecture">Architecture</a><a href="#simulation">Simulation</a><a href="#agents">Multi-agents</a>
+</div></nav>
+
+<main class="wrap">
+
+<section id="probleme">
+  <span class="eyebrow">Le problème</span>
+  <h2>Un port ne se teste pas en vrai</h2>
+  <p class="lead">Un terminal reçoit des navires et des camions. Des grues et des chariots cavaliers déplacent les conteneurs entre le quai, les zones de stockage et la sortie. Déplacer une zone ou acheter un engin coûte trop cher pour l'essayer. On simule donc d'abord, et on compare des stratégies d'exploitation.</p>
+  <div class="grid2">
+    <div class="card"><h3>Événements discrets</h3><p>L'état change à des instants précis : un camion arrive, une grue finit de décharger. Le laboratoire a retenu l'approche par <b>processus</b>, avec des <b>macro-processus</b> qui se décomposent.</p></div>
+    <div class="card"><h3>Le prototype SGTC</h3><p>Écrit en Lisp (CLOS), environ 6 hommes-années, validé au Havre puis sur le terminal fictif d'Intraseas : 8 zones de stockage, 2 postes d'accostage. Bon modèle, code impossible à faire évoluer.</p></div>
+  </div>
+  <div class="scroll"><table>
+    <thead><tr><th>SGTC (avant)</th><th>SIGMA (après)</th></tr></thead>
+    <tbody>
+      <tr><td class="bad">Héritage multiple partout, classes tampon, méthodes mortes</td><td class="good">Héritage simple Java, interfaces, une seule classe <code>Container</code></td></tr>
+      <tr><td class="bad">Gestion des ressources globale au système</td><td class="good">Chaque serveur gère ses propres ressources</td></tr>
+      <tr><td class="bad">Un processus qui attend une ressource reste bloqué</td><td class="good">Allouer et libérer sont des services : on poste la demande et on continue</td></tr>
+      <tr><td class="bad">Données en listes Lisp</td><td class="good">Scénario XML hiérarchique</td></tr>
+      <tr><td class="bad">Prototype jetable</td><td class="good">Étendre = créer une classe</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="fonction">
+  <span class="eyebrow">Le fonctionnel</span>
+  <h2>Des clients demandent des services à des serveurs</h2>
+  <p class="lead">Le modèle tient dans un triplet. Un événement dit : cette ressource demande ce service à ce serveur, à telle heure, une fois telles conditions remplies.</p>
+  <div class="event" role="group" aria-label="Structure d'un événement">
+    <div><small>heure</small><span>10</span></div>
+    <div><small>numéro</small><span>#4</span></div>
+    <div class="tri"><small>serveur</small><span>équipe</span></div>
+    <div class="tri"><small>ressource / client</small><span>camion 1</span></div>
+    <div class="tri"><small>service</small><span>décharger le conteneur</span></div>
+    <div><small>conditions</small><span>{3}</span></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>Ce que décrit l'utilisateur</h3><p>Un <b>scénario XML</b> : d'abord les serveurs et leurs ressources, ensuite les clients avec leur heure d'arrivée. L'imbrication des balises dit qui possède quoi.</p>
+<pre><span class="tag">&lt;EquipeCamion</span> <span class="attr">name</span>="import"<span class="tag">&gt;</span>
+  <span class="tag">&lt;CCProvider</span> <span class="attr">name</span>="cc prov 1"<span class="tag">&gt;</span>
+    <span class="tag">&lt;ChariotCavalier</span> <span class="attr">name</span>="CC1"
+       <span class="attr">capacite</span>="1" <span class="tag">/&gt;</span>
+<span class="tag">&lt;Camion</span> <span class="attr">name</span>="camion 1"
+   <span class="attr">import</span>="2" <span class="attr">export</span>="2" <span class="attr">heure</span>="10" <span class="tag">/&gt;</span></pre></div>
+    <div class="card"><h3>Ce qu'il obtient</h3><p>Une <b>trace</b> d'exécution, des <b>indicateurs statistiques</b>, et la possibilité de rejouer le même site avec d'autres équipes ou d'autres règles pour comparer. Le mémoire note que la trace brute devient vite illisible : une trace sélective figure parmi les évolutions.</p></div>
+  </div>
+  <h3>Un camion se fait décharger</h3>
+  <p class="lead">Le camion demande un service au système. Le système le décompose en sous-services reliés par des dépendances.</p>
+  <div class="flow" role="list">
+    <div class="step sys" role="listitem"><small>#1 · système</small><span>décharger le conteneur</span></div>
+    <div class="step dep" role="listitem"><small>#3 · déplacement</small><span>vers la zone d'échange</span></div>
+    <div class="step eq" role="listitem"><small>#4 · équipe</small><span>décharger le conteneur</span></div>
+    <div class="step dep" role="listitem"><small>#5 · déplacement</small><span>vers la sortie</span></div>
+    <div class="step sys" role="listitem"><small>#6 · système</small><span>fin du service 1</span></div>
+  </div>
+  <p class="note">Le système ajoute aussi #2 « fin de traitement », qui dépend de #1 et confirme que le client est sorti. Chaque service doit se terminer par son événement « fin du service ». Deux branches sans dépendance commune s'exécutent en parallèle.</p>
+</section>
+
+<section id="architecture">
+  <span class="eyebrow">L'implémentation</span>
+  <h2>Quatre couches, quatre composants</h2>
+  <p class="lead">Le mémoire pose d'abord quatre couches, puis constate que les composants les traversent. Il part donc des composants, et chacun gère les ressources dont il a besoin sans les partager.</p>
+  <div class="layers">
+    <div class="layer"><strong>Interface</strong><span>site, scénario, expérience, graphique</span></div>
+    <div class="layer"><strong>Métier portuaire</strong><span>gestionnaire de services, acteurs</span></div>
+    <div class="layer"><strong>Noyau</strong><span>gestionnaires de ressources, d'événements, de processus, de pannes, de stratégies</span></div>
+    <div class="layer"><strong>Base</strong><span>tris, graphes, listes, files</span></div>
+  </div>
+  <div class="grid4">
+    <div class="card comp"><h3>Système</h3><ul><li>transforme fichier ou commandes en tâches</li><li>fin de tâche</li><li>fin de traitement</li></ul></div>
+    <div class="card comp c-dep"><h3>Déplacement</h3><ul><li>déplacer un objet O vers un point P</li><li>utilise les voies que O peut emprunter</li></ul></div>
+    <div class="card comp c-eq"><h3>Équipe</h3><ul><li>décharger un conteneur de O</li><li>charger un conteneur sur O</li><li>alloue grues et chariots</li></ul></div>
+    <div class="card comp c-zs"><h3>Zone de stockage</h3><ul><li>ranger le conteneur d'un engin</li><li>donner un conteneur à un engin</li><li>organise les travées</li></ul></div>
+  </div>
+  <div class="msg">Message entre composants : <b>ressource</b> + <b>directive sur cette ressource</b>. Pas d'unité centrale.</div>
+  <div class="grid2">
+    <div class="card"><h3>L'échéancier</h3><p>Une file d'événements triée par date. À chaque tour, on prend le premier événement dont toutes les conditions sont vérifiées, on avance l'horloge à <code>max(horloge, heure)</code>, on le retire et on demande à son serveur d'exécuter le service. <code>post()</code> renvoie le numéro de l'événement posté, utilisable comme condition d'un autre. Les événements terminés sont recyclés pour éviter des millions de créations d'objets.</p></div>
+    <div class="card"><h3>Les ressources sans blocage</h3><p>Une demande de ressource est un service. Si rien n'est libre, l'allocateur garde la demande dans sa liste et rend la main sans poster la fin. À chaque libération ou nouvelle demande, il relit sa liste, alloue, puis poste l'événement de fin. Les services qui attendent cette ressource l'ont en condition, et démarrent seulement alors.</p></div>
+  </div>
+</section>
+
+<section id="simulation">
+  <span class="eyebrow">Essayer</span>
+  <h2>L'échéancier en marche</h2>
+  <p class="lead">La scène ci-dessous rejoue les événements réellement calculés par l'échéancier : un navire déchargé par la grue, des camions déchargés par des chariots cavaliers. Appuyez sur Lecture, ou avancez événement par événement. Avec un seul chariot, les demandes attendent la ressource : on voit un camion patienter, et la frise grisée le confirme.</p>
+
+  <div class="sim">
+    <div class="controls">
+      <label class="ctl" for="nCam">Camions <output id="oCam">2</output><input id="nCam" type="range" min="0" max="4" value="2"></label>
+      <label class="ctl" for="nCh">Chariots cavaliers <output id="oCh">1</output><input id="nCh" type="range" min="1" max="2" value="1"></label>
+      <label class="ctl" for="gap">Écart d'arrivée <output id="oGap">2</output><input id="gap" type="range" min="0" max="8" value="2"></label>
+      <label class="ctl" for="speed">Vitesse <output id="oSpd">1.6</output><input id="speed" type="range" min="0.4" max="4" step="0.2" value="1.6"></label>
+      <label class="chk" for="ship"><input id="ship" type="checkbox" checked> Navire</label>
+    </div>
+    <div class="btns">
+      <button id="bPlay" class="primary" type="button">Lecture</button>
+      <button id="bStep" type="button">Événement suivant</button>
+      <button id="bAll" type="button">Tout exécuter et rejouer</button>
+      <button id="bReset" type="button">Recommencer</button>
+    </div>
+    <div class="stats" aria-live="polite">
+      <div>horloge<b id="sClock">0</b></div>
+      <div>exécutés<b id="sDone">0</b></div>
+      <div>dans l'échéancier<b id="sQueue">0</b></div>
+      <div>clients sortis<b id="sOut">0</b></div>
+    </div>
+    <div class="caption" id="cap" aria-live="polite"></div>
+    <canvas id="scene" width="800" height="352" role="img" aria-label="Scène du terminal : navire, grue, chariots cavaliers et camions rejouant l'échéancier"></canvas>
+    <label class="ctl scrub" for="scrub">Position dans la simulation<input id="scrub" type="range" min="0" max="12" step="0.05" value="0"></label>
+    <div class="tl" id="tl" role="img" aria-label="Frise temporelle des tâches par serveur et par chariot"></div>
+    <div class="legend" id="leg"></div>
+    <div class="evt"><table>
+      <thead><tr><th>#</th><th>heure</th><th>serveur</th><th>client</th><th>service</th><th>dépend de</th><th>état</th><th>début–fin</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table></div>
+    <p class="note">Durées fixées pour l'exemple : déplacement 3 puis 2, déchargement 4, deux conteneurs par navire. Ce ne sont pas des données du mémoire. La grue n'est pas une ressource comptée ici : elle est représentée par l'ordre des deux déchargements du navire, qui s'enchaînent. Le dessin est schématique.</p>
+  </div>
+</section>
+
+<section id="agents">
+  <span class="eyebrow">Lecture multi-agents</span>
+  <h2>Presque un système multi-agents</h2>
+  <p class="lead">Le mémoire n'emploie jamais ce terme. Le rapprochement est une lecture du projet, et elle montre où SIGMA s'arrête.</p>
+  <div class="grid2">
+    <div class="card"><h3>Ce qui y ressemble</h3>
+      <p><b>Entités autonomes.</b> Chaque serveur a ses ressources et ses gestionnaires, sans partage.</p>
+      <p><b>Messages.</b> Les composants s'échangent une ressource et une directive, sans chef d'orchestre.</p>
+      <p><b>But décomposé.</b> Un service se découpe en sous-services.</p>
+      <p><b>Coordination.</b> Les dépendances entre événements synchronisent les serveurs et ouvrent le parallélisme.</p></div>
+    <div class="card"><h3>Ce qui en diffère</h3>
+      <p><b>Pas de décision propre.</b> Le serveur exécute le service que l'événement lui impose.</p>
+      <p><b>Pas de concurrence.</b> Un échéancier, une horloge globale, une exécution séquentielle.</p>
+      <p><b>Équipes figées.</b> Les serveurs sont déclarés dans le XML et ne changent pas en cours de simulation.</p></div>
+  </div>
+  <h3>Les évolutions imaginées</h3>
+  <div class="grid4">
+    <div class="card"><h3>Bourse de services</h3><p>Les clients y publient leurs demandes. Des équipes se forment en la consultant, puis se défont. Le gestionnaire de stratégies composerait l'équipe lui-même. C'est la suite que l'auteur juge la plus probable.</p></div>
+    <div class="card"><h3>Architecture HLA</h3><p>Méthodes renommées comme dans HLA et retours par <i>call-back</i>. Chaque serveur pourrait devenir un simulateur à part entière, voire relier plusieurs sites.</p></div>
+    <div class="card"><h3>Outils</h3><p>Éditeur de services, éditeur de site avec voies (vitesse, capacité, véhicules admis), zones de stockage détaillées, interface à sprites.</p></div>
+    <div class="card"><h3>Trace sélective</h3><p>Laisser chaque objet choisir ce qu'il trace, sans test « dois-je me tracer ? » dans chaque méthode, pour ne pas ralentir le noyau.</p></div>
+  </div>
+</section>
+
+<footer>
+  <span>Source : mémoire d'ingénieur CNAM « SIGMA : un système générique pour la simulation discrète basé sur la notion de service », C. Mames.</span>
+  <span>Les sources, le binaire et la javadoc ne sont pas publiés. Le texte complet de cette explication est dans <code>SIGMA/SIGMA.md</code>.</span>
+</footer>
+</main>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var DUR={move1:3,unload:4,move2:2};
+  var S,ta=0,chase=false,auto=false,TL=null;
+
+  function post(e){e.id=S.nextId++;e.state='attente';e.start=null;e.end=null;S.events.push(e);return e.id;}
+  function byId(id){return S.events.find(function(e){return e.id===id})}
+
+  function reset(){
+    var nCam=+$('nCam').value,nCh=+$('nCh').value,gap=+$('gap').value,ship=$('ship').checked;
+    S={events:[],nextId:1,clock:0,chariots:[],last:null,executed:0,nCam:nCam,ship:ship,total:nCam+(ship?1:0)};
+    for(var i=0;i<nCh;i++)S.chariots.push(0);
+    if(ship){
+      var s=post({t:1,server:'système',client:'navire 1',service:'décharger le navire',deps:[],kind:'client',cam:4,isShip:true});
+      post({t:1,server:'système',client:'navire 1',service:'fin de traitement',deps:[s],kind:'endproc',cam:4});
+    }
+    for(var k=0;k<nCam;k++){
+      var c='camion '+(k+1),t=k*gap;
+      var a=post({t:t,server:'système',client:c,service:'décharger le conteneur',deps:[],kind:'client',cam:k});
+      post({t:t,server:'système',client:c,service:'fin de traitement',deps:[a],kind:'endproc',cam:k});
+    }
+    S.caption='Les clients viennent de demander leur service. Cliquez sur « Événement suivant » ou sur « Lecture ».';
+  }
+
+  function ready(e){return e.state==='attente'&&e.deps.every(function(d){return byId(d).state==='done'});}
+  function plan(e){
+    var base=e.t;
+    e.deps.forEach(function(d){base=Math.max(base,byId(d).end)});
+    var start=base,res=-1;
+    if(e.kind==='unload'){
+      var m=0;for(var i=1;i<S.chariots.length;i++)if(S.chariots[i]<S.chariots[m])m=i;
+      res=m;start=Math.max(base,S.chariots[m]);
+    }
+    return {base:base,start:start,res:res};
+  }
+  function pick(){
+    var best=null,bp=null;
+    S.events.forEach(function(e){
+      if(!ready(e))return;
+      var p=plan(e);
+      if(!best||p.start<bp.start||(p.start===bp.start&&e.id<best.id)){best=e;bp=p}
+    });
+    return best?{e:best,p:bp}:null;
+  }
+  function horizon(){var h=S.clock;S.events.forEach(function(e){if(e.state==='done'&&e.end!==null)h=Math.max(h,e.end)});return h}
+  function target(){
+    var t=horizon();
+    if(auto){var pk=pick();if(pk)t=Math.max(t,pk.p.start)}
+    return t;
+  }
+
+  function step(){
+    var pk=pick();
+    if(!pk){S.caption='Échéancier vide : la simulation est terminée.';render();return false}
+    var e=pk.e,bp=pk.p;
+    if(ta>bp.start)ta=bp.start;
+    e.start=bp.start;e.base=bp.base;S.clock=Math.max(S.clock,bp.start);S.last=e.id;S.executed++;
+    var msg;
+    if(e.kind==='client'){
+      e.state='cours';
+      var m1,f;
+      if(e.isShip){
+        m1=post({t:e.start,server:'déplacement',client:e.client,service:'accoster',deps:[],kind:'move',leg:'in',dur:DUR.move1,cam:e.cam});
+        var u1=post({t:e.start,server:'équipe',client:e.client,service:'décharger le conteneur 1',deps:[m1],kind:'unload',dur:DUR.unload,cam:e.cam,isShip:true,j:0});
+        var u2=post({t:e.start,server:'équipe',client:e.client,service:'décharger le conteneur 2',deps:[u1],kind:'unload',dur:DUR.unload,cam:e.cam,isShip:true,j:1});
+        var m2s=post({t:e.start,server:'déplacement',client:e.client,service:'appareiller',deps:[u2],kind:'move',leg:'out',dur:DUR.move2,cam:e.cam});
+        f=post({t:e.start,server:'système',client:e.client,service:'fin du service '+e.id,deps:[m2s],kind:'endsvc',parent:e.id,cam:e.cam});
+        msg='Le système décompose #'+e.id+' : accoster (#'+m1+'), deux déchargements enchaînés (#'+u1+', #'+u2+', une seule grue), appareiller (#'+m2s+') et #'+f+'.';
+      }else{
+        m1=post({t:e.start,server:'déplacement',client:e.client,service:"vers la zone d'échange",deps:[],kind:'move',leg:'in',dur:DUR.move1,cam:e.cam});
+        var u=post({t:e.start,server:'équipe',client:e.client,service:'décharger le conteneur',deps:[m1],kind:'unload',dur:DUR.unload,cam:e.cam});
+        var m2=post({t:e.start,server:'déplacement',client:e.client,service:'vers la sortie',deps:[u],kind:'move',leg:'out',dur:DUR.move2,cam:e.cam});
+        f=post({t:e.start,server:'système',client:e.client,service:'fin du service '+e.id,deps:[m2],kind:'endsvc',parent:e.id,cam:e.cam});
+        msg='Le système décompose #'+e.id+' en #'+m1+', #'+u+', #'+m2+' et #'+f+', reliés par des conditions.';
+      }
+    }else if(e.kind==='move'){
+      e.end=e.start+e.dur;e.state='done';
+      msg='Déplacement de '+e.client+' ('+e.service+') de '+e.start+' à '+e.end+'.';
+    }else if(e.kind==='unload'){
+      e.end=e.start+e.dur;e.state='done';e.res=bp.res;S.chariots[bp.res]=e.end;
+      msg=e.client+' : '+e.service+' avec CC'+(bp.res+1)+', de '+e.start+' à '+e.end+'.';
+      if(e.start>e.base)msg+=' La demande a attendu un chariot de '+e.base+' à '+e.start+' dans la liste de l\'allocateur.';
+    }else if(e.kind==='endsvc'){
+      e.end=e.start;e.state='done';var p=byId(e.parent);p.end=e.start;p.state='done';
+      msg='« Fin du service '+p.id+' » : le service #'+p.id+' est terminé, ce qui libère #'+(p.id+1)+'.';
+    }else{
+      e.end=e.start;e.state='done';
+      msg='« Fin de traitement » : '+e.client+' est sorti du système à l\'heure '+e.start+'.';
+    }
+    S.caption='<span class="mono">#'+e.id+'</span> · '+msg;
+    render();
+    return true;
+  }
+
+  function colorOf(k){return 'var(--c'+((k%5)+1)+')'}
+
+  function render(){
+    var ev=S.events;
+    var out=ev.filter(function(e){return e.kind==='endproc'&&e.state==='done'}).length;
+    $('sClock').textContent=S.clock;
+    $('sDone').textContent=S.executed;
+    $('sQueue').textContent=ev.filter(function(e){return e.state==='attente'}).length;
+    $('sOut').textContent=out+' / '+S.total;
+    $('cap').innerHTML=S.caption;
+    var rows='';
+    ev.forEach(function(e){
+      var st=e.state==='done'?'done':e.state==='cours'?'cours':ready(e)?'prete':'';
+      var label=e.state==='done'?'terminé':e.state==='cours'?'en cours':ready(e)?'activable':'en attente';
+      rows+='<tr'+(S.last===e.id?' class="now"':'')+'><td class="mono">'+e.id+'</td><td class="mono">'+e.t+'</td><td class="srv">'+e.server+'</td><td>'+e.client+'</td><td>'+e.service+'</td><td class="mono">{'+e.deps.join(',')+'}</td><td><span class="pill '+st+'">'+label+'</span></td><td class="mono">'+(e.start===null?'':e.start+'–'+(e.end===null?'…':e.end))+'</td></tr>';
+    });
+    $('rows').innerHTML=rows;
+    timeline();
+    buttons();
+  }
+  function buttons(){
+    var any=!!pick();
+    $('bStep').disabled=!any;$('bAll').disabled=!any&&S.executed===0;
+    $('bPlay').disabled=!any&&ta>=horizon()-1e-6;
+    $('bPlay').textContent=auto?'Pause':'Lecture';
+  }
+
+  function timeline(){
+    var lanes=['déplacement','attente chariot'];
+    S.chariots.forEach(function(_,i){lanes.push('CC'+(i+1))});
+    var tasks=S.events.filter(function(e){return e.state==='done'&&(e.kind==='move'||e.kind==='unload')});
+    var maxT=Math.max(12,S.clock+2);
+    tasks.forEach(function(e){maxT=Math.max(maxT,e.end+1)});
+    var L=116,W=700,R=14,T=10,H=34,total=T+lanes.length*H+30;
+    var x=function(t){return L+(W-L-R)*t/maxT};
+    TL={x:x,maxT:maxT};
+    var s='<svg viewBox="0 0 '+W+' '+total+'" xmlns="http://www.w3.org/2000/svg">';
+    s+='<defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="none"/><line x1="0" y1="0" x2="0" y2="6" stroke="var(--wait)" stroke-width="2"/></pattern></defs>';
+    var stp=maxT>30?5:maxT>16?2:1;
+    for(var t=0;t<=maxT;t+=stp){
+      s+='<line x1="'+x(t)+'" y1="'+T+'" x2="'+x(t)+'" y2="'+(T+lanes.length*H)+'" stroke="var(--line)" stroke-width="1"/>';
+      s+='<text x="'+x(t)+'" y="'+(T+lanes.length*H+16)+'" font-size="11" text-anchor="middle">'+t+'</text>';
+    }
+    lanes.forEach(function(n,i){
+      var y=T+i*H;
+      s+='<text x="'+(L-8)+'" y="'+(y+H/2+4)+'" font-size="12" text-anchor="end">'+n+'</text>';
+      s+='<line x1="'+L+'" y1="'+(y+H)+'" x2="'+(W-R)+'" y2="'+(y+H)+'" stroke="var(--line)" stroke-width="1"/>';
+    });
+    s+='<line x1="'+x(S.clock)+'" y1="'+T+'" x2="'+x(S.clock)+'" y2="'+(T+lanes.length*H)+'" stroke="var(--accent)" stroke-width="2" stroke-dasharray="4 3"/>';
+    tasks.forEach(function(e){
+      var lane=e.kind==='move'?0:2+e.res,y=T+lane*H+5;
+      if(e.kind==='unload'&&e.start>e.base){
+        s+='<rect x="'+x(e.base)+'" y="'+(T+1*H+5)+'" width="'+(x(e.start)-x(e.base))+'" height="'+(H-10)+'" rx="3" fill="url(#hatch)" stroke="var(--wait)" stroke-width="1"/>';
+      }
+      s+='<rect x="'+x(e.start)+'" y="'+y+'" width="'+Math.max(2,x(e.end)-x(e.start))+'" height="'+(H-10)+'" rx="3" fill="'+colorOf(e.cam)+'"'+(S.last===e.id?' stroke="var(--ink)" stroke-width="2"':'')+'/>';
+      s+='<text x="'+(x(e.start)+5)+'" y="'+(y+(H-10)/2+4)+'" font-size="11" style="fill:#fff">'+(e.cam===4?'N':e.cam+1)+'</text>';
+    });
+    s+='<line id="ph" x1="'+x(0)+'" y1="'+(T-4)+'" x2="'+x(0)+'" y2="'+(T+lanes.length*H)+'" stroke="var(--ink)" stroke-width="2"/>';
+    s+='</svg>';
+    $('tl').innerHTML=s;
+    var lg='';
+    for(var k=0;k<S.nCam;k++)lg+='<span><i style="background:'+colorOf(k)+'"></i>camion '+(k+1)+'</span>';
+    if(S.ship)lg+='<span><i style="background:'+colorOf(4)+'"></i>navire (N)</span>';
+    lg+='<span><i style="background:repeating-linear-gradient(45deg,var(--wait) 0 2px,transparent 2px 4px)"></i>attente d\'un chariot</span><span><i style="background:var(--accent)"></i>dernier événement exécuté</span><span><i style="background:var(--ink)"></i>position de la scène</span>';
+    $('leg').innerHTML=lg;
+  }
+
+  /* ---------- scène animée ---------- */
+  var cv=$('scene'),ctx=cv.getContext('2d'),W=800,HH=352,TH={},frame=0;
+  function theme(){
+    var cs=getComputedStyle(document.documentElement);
+    ['--bg','--surface','--ink','--muted','--line','--accent','--steel','--steel-soft','--wait','--c1','--c2','--c3','--c4','--c5'].forEach(function(n){TH[n]=cs.getPropertyValue(n).trim()});
+  }
+  function fit(){var r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;cv.width=Math.max(300,Math.round(r.width*d));cv.height=Math.round(cv.width*HH/W)}
+  function ccol(k){return TH['--c'+((k%5)+1)]}
+  function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+  function lerp(a,b,t){return a+(b-a)*t}
+  function poly(pts,p){
+    var L=[],t=0,i;
+    for(i=1;i<pts.length;i++){var d=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);L.push(d);t+=d}
+    var q=clamp(p,0,1)*t;
+    for(i=0;i<L.length;i++){
+      if(q<=L[i]||i===L.length-1){var f=L[i]?Math.min(1,q/L[i]):1;return [lerp(pts[i][0],pts[i+1][0],f),lerp(pts[i][1],pts[i+1][1],f)]}
+      q-=L[i];
+    }
+  }
+  function cont(x,y,color){
+    ctx.fillStyle=color;ctx.fillRect(x-13,y-6,26,12);
+    ctx.strokeStyle='rgba(0,0,0,.28)';ctx.lineWidth=1;
+    for(var i=-8;i<=8;i+=4){ctx.beginPath();ctx.moveTo(x+i,y-6);ctx.lineTo(x+i,y+6);ctx.stroke()}
+    ctx.strokeStyle='rgba(0,0,0,.45)';ctx.strokeRect(x-13,y-6,26,12);
+  }
+  function text(t,x,y,size,color,align){ctx.font=size+'px "IBM Plex Mono",ui-monospace,monospace';ctx.fillStyle=color;ctx.textAlign=align||'left';ctx.fillText(t,x,y)}
+
+  var BX=[100,250,400],REST=[[80,236],[130,236]],QUAY=[524,110],SHIPX=650;
+  var INIT=[4,3,5];
+  function blockOf(e){return e.id%3}
+  function spotX(k){return 190+95*k}
+
+  function chariotPose(e){
+    var p=clamp((ta-e.start)/e.dur,0,1),rest=REST[e.res]||REST[0],dx=BX[blockOf(e)]+60,A,B,C;
+    if(e.isShip){
+      A=[rest,[538,236],[538,140],QUAY];B=[QUAY,[524,140],[dx,140],[dx,150]];C=[[dx,150],[dx,140],[538,140],[538,236],rest];
+    }else{
+      var sx=spotX(e.cam);
+      A=[rest,[sx,236],[sx,250]];B=[[sx,250],[sx,236],[dx,236],[dx,224]];C=[[dx,224],[dx,236],rest];
+    }
+    if(p<.3)return {pos:poly(A,p/.3),carry:false};
+    if(p<.75)return {pos:poly(B,(p-.3)/.45),carry:true};
+    return {pos:poly(C,(p-.75)/.25),carry:false};
+  }
+  function eventsOf(cam,kind){return S.events.filter(function(e){return e.cam===cam&&e.kind===kind&&e.state==='done'})}
+
+  function truckPose(k){
+    var m=eventsOf(k,'move'),mi=m.filter(function(e){return e.leg==='in'})[0],mo=m.filter(function(e){return e.leg==='out'})[0],u=eventsOf(k,'unload')[0];
+    if(!mi||ta<mi.start)return null;
+    var sx=spotX(k),spot=266;
+    if(ta<mi.end){var p=(ta-mi.start)/mi.dur;var q=poly([[-60,304],[sx,304],[sx,spot]],p);return {x:q[0],y:q[1],dir:1,loaded:true}}
+    var loaded=!(u&&ta>=u.start+.3*u.dur);
+    if(mo&&ta>=mo.start){
+      if(ta>=mo.end)return null;
+      var q2=poly([[sx,spot],[sx,336],[-60,336]],(ta-mo.start)/mo.dur);return {x:q2[0],y:q2[1],dir:-1,loaded:false};
+    }
+    return {x:sx,y:spot,dir:1,loaded:loaded};
+  }
+  function drawTruck(t,k){
+    var x=t.x,y=t.y,d=t.dir;
+    ctx.fillStyle=TH['--steel'];ctx.fillRect(d>0?x-22:x-8,y-7,30,14);
+    ctx.fillStyle=ccol(k);ctx.fillRect(d>0?x+8:x-20,y-7,12,14);
+    ctx.fillStyle=TH['--ink'];[x-14,x+4,d>0?x+14:x-14].forEach(function(wx){ctx.beginPath();ctx.arc(wx,y+8,3.2,0,6.3);ctx.fill()});
+    if(t.loaded)cont(x-(d>0?7:-7)+(d>0?0:0),y-13,ccol(k));
+  }
+  function drawChariot(x,y,carry,col){
+    ctx.fillStyle=TH['--ink'];
+    ctx.fillRect(x-18,y-10,36,5);ctx.fillRect(x-18,y-10,4,18);ctx.fillRect(x+14,y-10,4,18);
+    ctx.beginPath();ctx.arc(x-16,y+9,3,0,6.3);ctx.arc(x+16,y+9,3,0,6.3);ctx.fill();
+    ctx.fillStyle=TH['--accent'];ctx.fillRect(x-4,y-15,8,5);
+    if(carry)cont(x,y-1,col);
+  }
+
+  function draw(){
+    var sc=cv.width/W;ctx.setTransform(sc,0,0,sc,0,0);ctx.clearRect(0,0,W,HH);
+    ctx.fillStyle=TH['--surface'];ctx.fillRect(0,0,W,HH);
+    ctx.fillStyle=TH['--steel-soft'];ctx.fillRect(0,0,W,95);
+    ctx.strokeStyle=TH['--line'];ctx.lineWidth=1;
+    for(var yy=70;yy<95;yy+=8)for(var xx=(yy%16)*2;xx<W;xx+=46){ctx.beginPath();ctx.moveTo(xx,yy);ctx.lineTo(xx+16,yy);ctx.stroke()}
+    ctx.fillStyle=TH['--line'];ctx.fillRect(0,95,W,30);
+    ctx.fillStyle=TH['--line'];ctx.globalAlpha=.5;ctx.fillRect(0,292,W,24);ctx.fillRect(0,324,W,24);ctx.globalAlpha=1;
+    ctx.setLineDash([8,8]);ctx.strokeStyle=TH['--muted'];ctx.beginPath();ctx.moveTo(0,304);ctx.lineTo(W,304);ctx.moveTo(0,336);ctx.lineTo(W,336);ctx.stroke();
+    ctx.strokeStyle=TH['--steel'];ctx.strokeRect(150,247,420,38);ctx.setLineDash([]);
+    text('QUAI',10,114,10,TH['--muted']);text('STOCKAGE',10,190,10,TH['--muted']);text("ZONE D'ÉCHANGE",154,244,10,TH['--steel']);
+    text('ENTRÉE',10,308,10,TH['--muted']);text('SORTIE',10,340,10,TH['--muted']);
+
+    // stockage
+    var drops=[[],[],[]];
+    S.events.forEach(function(e){if(e.kind==='unload'&&e.state==='done'&&ta>=e.start+.75*e.dur)drops[blockOf(e)].push({t:e.start,c:e.cam})});
+    for(var b=0;b<3;b++){
+      ctx.fillStyle=TH['--bg'];ctx.fillRect(BX[b],160,120,52);ctx.strokeStyle=TH['--line'];ctx.strokeRect(BX[b],160,120,52);
+      drops[b].sort(function(a,c){return a.t-c.t});
+      var n=INIT[b]+drops[b].length;
+      for(var i=0;i<n&&i<12;i++){
+        cont(BX[b]+17+(i%4)*29,160+10+Math.floor(i/4)*16,i<INIT[b]?TH['--wait']:ccol(drops[b][i-INIT[b]].c));
+      }
+    }
+
+    // navire
+    var shipEv=S.ship?S.events.filter(function(e){return e.cam===4}):[];
+    var sm=shipEv.filter(function(e){return e.kind==='move'&&e.state==='done'});
+    var sIn=sm.filter(function(e){return e.leg==='in'})[0],sOut=sm.filter(function(e){return e.leg==='out'})[0];
+    var shipUn=shipEv.filter(function(e){return e.kind==='unload'&&e.state==='done'});
+    var sx=null;
+    if(sIn&&ta>=sIn.start){
+      sx=SHIPX;
+      if(ta<sIn.end){var pe=(ta-sIn.start)/sIn.dur;sx=lerp(960,SHIPX,1-Math.pow(1-pe,2))}
+      if(sOut&&ta>=sOut.start){var po=(ta-sOut.start)/sOut.dur;sx=lerp(SHIPX,960,po*po)}
+    }
+    if(sx!==null&&sx<940){
+      ctx.fillStyle=TH['--steel'];ctx.beginPath();ctx.moveTo(sx-100,64);ctx.lineTo(sx+100,64);ctx.lineTo(sx+84,90);ctx.lineTo(sx-92,90);ctx.closePath();ctx.fill();
+      ctx.fillStyle=TH['--surface'];ctx.fillRect(sx-92,68,160,2);
+      ctx.fillStyle=TH['--muted'];ctx.fillRect(sx+58,40,34,24);ctx.fillStyle=TH['--surface'];ctx.fillRect(sx+64,46,6,5);ctx.fillRect(sx+76,46,6,5);
+      for(var j=0;j<2;j++){
+        var uj=shipUn.filter(function(e){return e.j===j})[0];
+        if(!uj||ta<uj.start)cont(sx-50+34*j,58,ccol(4));
+      }
+    }
+    // grue
+    ctx.fillStyle=TH['--accent'];ctx.fillRect(498,28,6,97);ctx.fillRect(544,28,6,97);ctx.fillRect(498,24,210,6);ctx.fillRect(492,40,64,8);ctx.fillRect(498,28,50,4);
+    var tx=560,hang=null;
+    shipUn.forEach(function(e){
+      var p=(ta-e.start)/e.dur;
+      if(p>=0&&p<.3){
+        var q=poly([[SHIPX-50+34*e.j,56],[SHIPX-50+34*e.j,36],[QUAY[0],36],[QUAY[0],QUAY[1]]],p/.3);
+        hang=q;tx=q[0];
+      }
+    });
+    ctx.fillStyle=TH['--ink'];ctx.fillRect(tx-6,26,12,8);
+    if(hang){ctx.strokeStyle=TH['--ink'];ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(tx,34);ctx.lineTo(tx,hang[1]-6);ctx.stroke();cont(hang[0],hang[1],ccol(4))}
+
+    // camions
+    for(var k=0;k<S.nCam;k++){var tp=truckPose(k);if(tp)drawTruck(tp,k)}
+    // chariots
+    for(var i2=0;i2<S.chariots.length;i2++){
+      var act=null;
+      S.events.forEach(function(e){if(e.kind==='unload'&&e.state==='done'&&e.res===i2&&ta>=e.start&&ta<e.end)act=e});
+      if(act){var cp=chariotPose(act);drawChariot(cp.pos[0],cp.pos[1],cp.carry,ccol(act.cam))}
+      else drawChariot(REST[i2][0],REST[i2][1],false);
+      text('CC'+(i2+1),REST[i2][0],262,9,TH['--muted'],'center');
+    }
+    text('t = '+ta.toFixed(1),W-10,HH-10,12,TH['--ink'],'right');
+  }
+
+  /* ---------- boucle ---------- */
+  var last=performance.now(),scrub=$('scrub');
+  function loop(now){
+    var dt=Math.min(.1,(now-last)/1000);last=now;
+    if(S){
+      if(auto){var pk=pick();if(pk&&ta>=pk.p.start-1e-9)step();else if(!pk&&ta>=horizon()-1e-9){auto=false;buttons()}}
+      var tg=target();
+      if((chase||auto)&&ta<tg){ta=Math.min(tg,ta+(+$('speed').value)*dt)}
+      else if(chase&&ta>=tg-1e-9){chase=false;buttons()}
+      var h=horizon();
+      if(+scrub.max!==h)scrub.max=h;
+      if(document.activeElement!==scrub)scrub.value=ta;
+      var ph=document.getElementById('ph');if(ph&&TL){var px=TL.x(Math.min(ta,TL.maxT));ph.setAttribute('x1',px);ph.setAttribute('x2',px)}
+      if(frame++%20===0)theme();
+      draw();
+    }
+    requestAnimationFrame(loop);
+  }
+
+  function init(){
+    reset();
+    for(var i=0;i<9&&step();i++){}
+    ta=Math.min(horizon(),4.5);chase=false;auto=false;
+    render();
+  }
+
+  ['nCam','nCh','gap','speed'].forEach(function(id){
+    var map={nCam:'oCam',nCh:'oCh',gap:'oGap',speed:'oSpd'};
+    $(id).addEventListener('input',function(){$(map[id]).textContent=$(id).value;if(id!=='speed')init()});
+  });
+  $('ship').addEventListener('change',init);
+  $('bStep').addEventListener('click',function(){step();chase=true;buttons()});
+  $('bPlay').addEventListener('click',function(){auto=!auto;if(auto)chase=true;buttons()});
+  $('bAll').addEventListener('click',function(){var n=0;while(step()&&n++<500){}ta=0;auto=false;chase=true;render()});
+  $('bReset').addEventListener('click',init);
+  scrub.addEventListener('input',function(){ta=+scrub.value;chase=false;auto=false;buttons()});
+  window.addEventListener('resize',fit);
+  fit();theme();init();
+  requestAnimationFrame(loop);
+})();
+</script>
