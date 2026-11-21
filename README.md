@@ -22,15 +22,12 @@ On évitait les calculs coûteux : tables de sinus précalculées, arithmétique
 
 
 
-## Contenu du repo 
+## Contenu du repo
 
-MALOREAN_JS
-- portage en HTML/JavaScript des démo
-  - Consultable [en ligne](https://claude.ai/artifact/LR7wHQjS4YWbaKbsEe1vQH)
-- Articles sur les concepts méthématiques utilisés pour réaliser les démo 
-- Galerie d'image produite 
-
-
-Docs 
-- [Articles sur les mathématiques utilisées pour els démos](docs/mathematiques-des-demos.md)
-
+| Dossier | Contenu |
+|---|---|
+| **MALOREAN_EFFECT/** | Le projet Malorean Effect (1992-1995) |
+| &nbsp;&nbsp;[ORIGINAL](MALOREAN_EFFECT/ORIGINAL/README.md) | Les archives d'origine, sans doublons. `DEMO/<nom>/{code, build, ressources}` : une démo = un dossier (sources, exécutables, données, images, musique). `CODE hors demo/` : les essais et bibliothèques qui ne sont pas rattachés à une démo (Pascal, assembleur, C, images de fractales). |
+| &nbsp;&nbsp;[PORTAGE_JS](MALOREAN_EFFECT/PORTAGE_JS/index.html) | Le portage en HTML/JavaScript de toutes les démos, avec les galeries d'images et l'article de maths. Consultable [en ligne](https://claude.ai/artifact/LR7wHQjS4YWbaKbsEe1vQH). Les outils de rétro-ingénierie sont dans `tools/`. |
+| &nbsp;&nbsp;[docs](MALOREAN_EFFECT/docs/math/mathematiques-des-demos.md) | L'article sur les mathématiques utilisées dans les démos, et les PDF d'origine (Strange, Math1, Registre). |
+| **SIGMA/** | Autre projet archivé. |
