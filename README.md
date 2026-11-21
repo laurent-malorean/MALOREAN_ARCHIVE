@@ -30,4 +30,6 @@ On évitait les calculs coûteux : tables de sinus précalculées, arithmétique
 | &nbsp;&nbsp;[ORIGINAL](MALOREAN_EFFECT/ORIGINAL/README.md) | Les archives d'origine, sans doublons. `DEMO/<nom>/{code, build, ressources}` : une démo = un dossier (sources, exécutables, données, images, musique). `CODE hors demo/` : les essais et bibliothèques qui ne sont pas rattachés à une démo (Pascal, assembleur, C, images de fractales). |
 | &nbsp;&nbsp;[PORTAGE_JS](MALOREAN_EFFECT/PORTAGE_JS/index.html) | Le portage en HTML/JavaScript de toutes les démos, avec les galeries d'images et l'article de maths. Consultable [en ligne](https://claude.ai/artifact/LR7wHQjS4YWbaKbsEe1vQH). Les outils de rétro-ingénierie sont dans `tools/`. |
 | &nbsp;&nbsp;[docs](MALOREAN_EFFECT/docs/math/mathematiques-des-demos.md) | L'article sur les mathématiques utilisées dans les démos, et les PDF d'origine (Strange, Math1, Registre). |
-| **SIGMA/** | Autre projet archivé. |
+| **SIGMA/** | Un autre projet, sans rapport avec les démos : SIGMA (2003), un noyau Java de simulation d'un terminal à conteneurs, réalisé au laboratoire PSI de l'INSA de Rouen pour mon mastère au CESI. Seule l'explication est publiée, pas les sources. |
+| &nbsp;&nbsp;[SIGMA.md](SIGMA/SIGMA.md) | Du problème au fonctionnel puis à l'implémentation, avec une lecture « système multi-agents ». |
+| &nbsp;&nbsp;[sigma-explorer.html](SIGMA/sigma-explorer.html) | Page interactive : l'échéancier du simulateur rejoué avec un navire, une grue, des chariots cavaliers et des camions. |
