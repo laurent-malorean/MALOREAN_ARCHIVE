@@ -4,7 +4,7 @@ Les démos *Mathematica 1, 2, 3, 5 et 6* tiennent en quelques dizaines de kilo-o
 
 > Les formules sont écrites en LaTeX (`$…$` en ligne, `$$…$$` en bloc). Elles s'affichent dans GitHub, dans l'aperçu Markdown de VS Code, dans Obsidian ou Jupyter. Les formules importantes sont aussi données en Pascal, lisibles en texte brut.
 
-Toutes les images de cet article sont produites par les démos portées en JavaScript (`MALOREAN_JS/`) ; les extraits de code viennent de `malorean effect/MALOREAN/CODE/demosour/`.
+Toutes les images de cet article sont produites par les démos portées en JavaScript (`PORTAGE_JS/`) ; les extraits de code viennent de `ORIGINAL/DEMO/*/code/`.
 
 ## Sommaire
 
@@ -320,14 +320,14 @@ Le même raisonnement explique la forme des procédures : une boucle sur $f$, un
 
 ## 11. Où retrouver chaque idée
 
-| Idée | Source d'origine | Démo web (`MALOREAN_JS`) |
+| Idée | Source d'origine | Démo web (`PORTAGE_JS`) |
 |---|---|---|
-| Symétrie à huit, formules entières | `CODE/SOURCE/STRANGE/CARLE*.PAS`, `math/STRANGE.DOC` | *Strange* |
-| Fractales en virgule fixe | `demosour/mat1/SOURCE/DEMO_1.PAS` | *Mathematica 1* |
-| Effets Carle, Rotate, ExPoly, Cong, Es | `demosour/mat2/SOURCE/DEM2.PAS` | *Mathematica 2* |
-| Racine complexe, rationnelle, nombres triangulaires, polynômes | `demosour/mat3/MAT3.PAS` | *Mathematica 3* |
-| Quartiques | `demosour/mat5/MAT5.PAS` | *Mathematica 5* |
-| Formules `Marc`, rotation de palette | `demosour/mat6/MAT6.PAS` | *Mathematica 6* |
+| Symétrie à huit, formules entières | `CODE hors demo/STRANGE/CARLE*.PAS`, `docs/STRANGE_formules.pdf` | *Strange* |
+| Fractales en virgule fixe | `DEMO/MAT_1/code/SOURCE/DEMO_1.PAS` | *Mathematica 1* |
+| Effets Carle, Rotate, ExPoly, Cong, Es | `DEMO/MAT_2/code/SOURCE/DEM2.PAS` | *Mathematica 2* |
+| Racine complexe, rationnelle, nombres triangulaires, polynômes | `DEMO/MAT_3/code/MAT3.PAS` | *Mathematica 3* |
+| Quartiques | `DEMO/MAT_5/code/MAT5.PAS` | *Mathematica 5* |
+| Formules `Marc`, rotation de palette | `DEMO/MAT_6/code/MAT6.PAS` | *Mathematica 6* |
 | Produits scalaire et vectoriel, rotations, faces cachées | `math/MATH1.DOC` | *Cube et visibilité* |
 
-Pour les relire, ouvrir `MALOREAN_JS/index.html` dans un navigateur : la colonne de gauche liste les démos, la vitesse se règle, et la description de chaque scène nomme la procédure Pascal d'origine.
+Pour les relire, ouvrir `PORTAGE_JS/index.html` dans un navigateur : la colonne de gauche liste les démos, la vitesse se règle, et la description de chaque scène nomme la procédure Pascal d'origine.
