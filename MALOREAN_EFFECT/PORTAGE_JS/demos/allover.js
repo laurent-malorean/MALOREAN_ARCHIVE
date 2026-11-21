@@ -185,7 +185,7 @@
   sceneDemo({
     id: 'allover', title: 'All Over The World', year: '1993',
     desc: 'Code et graphisme de Toto. MALOREAN.EXE enchaîne trois programmes : des cubes de verre qui réfractent un décor, une fonction de degré six avec boules de potentiel et chaînettes, puis des traînées de facettes sur un décor arithmétique.',
-    source: 'CODE/demosour/all_over/MALOREAN.PAS, MALOREA1.PAS, MALOREA2.PAS, MALOREA3.PAS · DEMO/ALL_OVER/DEMO/MALODATA.00x',
+    source: 'DEMO/ALL_OVER/code/MALOREAN.PAS, MALOREA1.PAS, MALOREA2.PAS, MALOREA3.PAS · DEMO/ALL_OVER/ressources/MALODATA.00x',
     scenes: [
       text('Écran de départ (MALOREA1)', 'Message de compatibilité affiché pendant 4 s avant le passage en mode MCGA.', TXT.intro, 4000),
       gfx('1 · Cubes de verre', 'Deux cubes (12 facettes) animés par les trajectoires de MALODATA.001 ; chaque facette ajoute son « indice de réfraction » (4 à 7) aux indices de couleur du décor. Deux globes à 12 images. Fondu de palette pendant les 255 premières images.', part1),

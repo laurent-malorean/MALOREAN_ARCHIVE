@@ -238,7 +238,7 @@
   sceneDemo({
     id: 'mat1', title: 'Mathematica 1', year: '1993',
     desc: 'Release septembre 1993 · « the first demo of the M.E. team ». Code Volpone, gfx Toto. Menu texte puis treize courbes fractales en entiers 32 bits.',
-    source: 'CODE/demosour/mat1/SOURCE/DEMO_1.PAS',
+    source: 'DEMO/MAT_1/code/SOURCE/DEMO_1.PAS',
     scenes: [
       page('Menu SETUP BOARD', 'Interface texte avec souris dans l\'original (boutons DEMO, CONTACT, ABOUT, EXIT). Ici les pages sont affichées sans interaction.', menu, 6000),
       { name: 'Data.000', note: "LoadShoot('DATA.000') puis Delay(12000)", run: image('mat1', 'data.000', 12000) },

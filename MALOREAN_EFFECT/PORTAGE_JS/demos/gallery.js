@@ -3,7 +3,7 @@
 DEMOS.push({
   id: 'galerie', title: 'Galerie d\'images', year: '1992–95', group: 'outil',
   desc: GALLERY.length + ' images uniques décodées depuis les fichiers DATA.xxx, MALODATA et .BIT : logos, fractales et séries de rosaces.',
-  source: 'DATA.000… · ALL_OVER/*.BIT · CODE/SOURCE/BIT',
+  source: 'DATA.000… · DEMO/ALL_OVER/ressources/MALODATA.00x · CODE hors demo/BIT',
   mount(el) {
     const short = n => n.replace(/\.png$/, '').replace(/^(CODE__SOURCE__|CODE__demosour__|DEMO__)/, '').replace(/__/g, ' / ').replace(/_/g, ' ');
     el.innerHTML = `

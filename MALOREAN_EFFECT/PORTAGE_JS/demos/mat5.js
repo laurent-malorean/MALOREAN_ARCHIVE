@@ -60,7 +60,7 @@
   sceneDemo({
     id: 'mat5', title: 'Mathematica 5', year: '1993',
     desc: 'Release décembre 1993 · code Volpone, idées de Toto sur les quartiques. Produits de polynômes du second degré en x et y, couleur = quotient modulo 256.',
-    source: 'CODE/demosour/mat5/MAT5.PAS',
+    source: 'DEMO/MAT_5/code/MAT5.PAS',
     scenes: [
       { name: 'Data.000', note: "LoadShoot('data.000') puis Delay(5000)", run: image('mat5', 'data.000') },
       { name: 'Quart_1', note: 'Palette Toto17. (Image(Q1)·Image(Q2)) div 10000.', run: quart1 },

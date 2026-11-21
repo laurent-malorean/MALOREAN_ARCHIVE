@@ -1,8 +1,8 @@
-// Galerie des 116 fractales GIF de malorean effect/MALOREAN/Image/FRACTAL (vignettes intégrées ; pleine taille dans images/fractal/ en local).
+// Galerie des 116 fractales GIF de CODE hors demo/Image/FRACTAL (vignettes intégrées ; pleine taille dans images/fractal/ en local).
 DEMOS.push({
   id: 'fractales', title: 'Galerie de fractales', year: '1992–94', group: 'outil',
   desc: FRACTALS.length + ' images GIF de fractales (Mandelbrot, Julia, rosaces) générées par les programmes de l\'archive.',
-  source: 'malorean effect/MALOREAN/Image/FRACTAL/*.GIF',
+  source: 'CODE hors demo/Image/FRACTAL/*.GIF',
   mount(el) {
     el.innerHTML = `<div class="bar"><input id="fq" type="search" placeholder="Filtrer (ex. FRAC1, EMSIN)" aria-label="Filtrer"><span class="rv" id="fn" style="width:auto"></span></div>
       <div class="grid" id="fg"></div>

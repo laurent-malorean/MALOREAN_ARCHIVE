@@ -50,7 +50,7 @@
   DEMOS.push({
     id: 'strange', title: 'Strange', year: '1993', group: 'demo',
     desc: 'Formules entières f(x,y,z) calculées pour chaque pixel, avec z comme numéro d\'image. Écran VGA 320×200 en symétrie à 8.',
-    source: 'CODE/SOURCE/STRANGE/CARLE*.PAS · math/STRANGE.DOC',
+    source: 'CODE hors demo/STRANGE/CARLE*.PAS · docs/STRANGE_formules.pdf',
     mount(el) {
       el.innerHTML = `
         <div class="screen"><canvas id="stc" width="320" height="200" class="px"></canvas></div>

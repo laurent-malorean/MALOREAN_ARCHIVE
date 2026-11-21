@@ -7,12 +7,12 @@ Ces scripts ont servi à lire les `.EXE` dont le source Pascal n'a pas été ret
 * `unpklite.py <exe> <sortie>` : décompresse un `.EXE` PKLITE en émulant son décompresseur (unicorn) jusqu'à l'entrée du programme d'origine ; écrit la mémoire à partir du PSP. L'image déballée commence à l'offset 0x100 de la sortie.
 * `pas2js.py <DEM2.PAS> <sortie.js>` : traducteur Pascal vers JavaScript des procédures d'effets de MAT_2.
 
-`FORTUNE_decompresse.bin` (dans `DEMO/FORTUNE/`) est l'image déballée de `FORTUNE.EXE` : le programme commence à l'offset 0x4720 (initialisation de Turbo Pascal), la procédure d'effet à l'offset 0x516.
+`FORTUNE_decompresse.bin` (dans `ORIGINAL/DEMO/FORTUNE/ressources/`) est l'image déballée de `FORTUNE.EXE` : le programme commence à l'offset 0x4720 (initialisation de Turbo Pascal), la procédure d'effet à l'offset 0x516.
 
 Autres outils :
 
 * `emu_fortune.py` : émule l'initialisation de FORTUNE.EXE (tables sinus/cosinus en Real) et en relève les trois tables entières (data/fortune.js).
-* `emu_belladone.py <dossier BELLADON> <sortie.json>` : relève les six tables trigonométriques de BELLADONE ; sert de référence pour vérifier l'interpréteur JS (`js/x86.js`), qui retrouve exactement les mêmes valeurs.
+* `emu_belladone.py <DEMO1.EXE> <TRIGO.TBL> <sortie.json>` : relève les six tables trigonométriques de BELLADONE ; sert de référence pour vérifier l'interpréteur JS (`js/x86.js`), qui retrouve exactement les mêmes valeurs.
 * `build_article.js` : génère data/article.js (article de maths en HTML, formules KaTeX en MathML) à partir de docs/math/mathematiques-des-demos.md.
 * `build_artifact.py <sortie.html>` : assemble index.html et tous ses scripts en une page unique pour l'Artifact claude.ai.
 

@@ -49,7 +49,7 @@
     music: 'tknodoom',
     id: 'mat2', title: 'Mathematica 2', year: '1993',
     desc: 'Release septembre 1993 · code Volpone, Toto (code et gfx), musique Sun/DreamDealers. Une soixantaine d\'effets entiers : Carle, rotations, polynômes, congruences et fonctions trigonométriques.',
-    source: 'CODE/demosour/mat2/SOURCE/DEM2.PAS',
+    source: 'DEMO/MAT_2/code/SOURCE/DEM2.PAS',
     extra(bar) {
       bar.insertAdjacentHTML('beforeend', '<label>Arête <input type="range" id="m2a" min="30" max="100" value="86"><span class="rv" id="m2av">86</span></label>');
       bar.querySelector('#m2a').oninput = e => { ARETE.v = +e.target.value; bar.querySelector('#m2av').textContent = e.target.value; };

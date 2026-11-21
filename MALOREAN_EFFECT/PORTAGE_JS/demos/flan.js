@@ -90,7 +90,7 @@
     music: 'alice',
     id: 'flan', title: 'The Come Back of SuperCustard Tart', year: 'date inconnue',
     desc: 'Intro dédiée à Cédric : un fractal en entiers dessiné en mode X sur quatre pages, puis défilement matériel de l\'écran (adresse de début d\'écran changée à chaque image). Code et musique de Volpone \u00a0; musique ALICE.MOD (bouton ♪).',
-    source: 'DEMO/FLAN/FLAN.EXE (reconstitué par désassemblage)',
+    source: 'DEMO/FLAN/build/FLAN.EXE (reconstitué par désassemblage)',
     scenes: [
       { name: 'Calcul du fractal', note: 'Mode X, palette VGA par défaut. z₀ = (Px + 5·ye + xe, Py + 5·xe + ye), z ← z² + c, 200 itérations, couleur = ((x+y) div 150 + n) mod 256.', run: fractal },
       { name: 'Défilement horizontal', note: 'SetStart(i) pour i de 1 à 160 : 4 pixels par pas, une ligne plus bas tous les 80 pas.', run: function* (v) { yield* ensure(v); yield* pan(v); } },

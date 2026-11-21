@@ -53,7 +53,7 @@
     music: 'redhouse',
     id: 'mat6', title: 'Mathematica 6', year: '1994',
     desc: 'Release mai 1994 · code Volpone (code et musique), Askchaga (code), Toto (gfx). Images, effets « Marc » en arithmétique entière et rotation de palette. Musique : REDHOUSE.MOD (bouton ♪).',
-    source: 'CODE/demosour/mat6/MAT6.PAS',
+    source: 'DEMO/MAT_6/code/MAT6.PAS',
     scenes: [
       { name: 'Data.005', note: 'Image, attente de 100 ticks (≈ 5,5 s).', run: function* (v) { v.loadImage('mat6', 'data.005'); yield 100 * TICK; } },
       { name: 'Data.000', note: 'Image, Delay(4000).', run: image('mat6', 'data.000', 4000) },

@@ -1,7 +1,8 @@
 import struct,sys
 from unicorn import *
 from unicorn.x86_const import *
-B=open("/Users/lde/Library/Mobile Documents/com~apple~CloudDocs/9._CODE/MALOREAN_ARCHIVES/malorean effect/MALOREAN/DEMO/FORTUNE/FORTUNE_decompresse.bin",'rb').read()
+import os
+B=open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','..','ORIGINAL','DEMO','FORTUNE','ressources','FORTUNE_decompresse.bin'),'rb').read()
 uc=Uc(UC_ARCH_X86,UC_MODE_16);uc.mem_map(0,0x100000)
 uc.mem_write(0x10100,B)
 DS=0x157f

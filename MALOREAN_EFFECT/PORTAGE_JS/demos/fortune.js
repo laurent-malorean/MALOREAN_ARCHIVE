@@ -48,7 +48,7 @@
     music: 'space',
     id: 'fortune', title: 'Fortune plango vulnera', year: '1994',
     desc: 'Code et musique de Volpone (août 1994). Une seule formule à trois tables, évaluée sur un huitième d\'écran et recopiée par symétrie ; les 7 phases changent la plage du paramètre a et un petit terme (Random, or, xor). Musique SPACE.MOD (bouton ♪).',
-    source: 'DEMO/FORTUNE/FORTUNE.EXE (reconstitué par désassemblage)',
+    source: 'DEMO/FORTUNE/build/FORTUNE.EXE (reconstitué par désassemblage)',
     scenes: [
       { name: 'Effet complet (7 phases)', note: 'Les sept phases à la suite ; le programme original recommence en boucle jusqu\'à une touche.', run: run(PHASES) },
       ...PHASES.map((p, k) => ({ name: 'Phase ' + (k + 1) + ' : a de ' + p.a0 + ' à ' + p.a1, note: p.note, run: run([p]) })),

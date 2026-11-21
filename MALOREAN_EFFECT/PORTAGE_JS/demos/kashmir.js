@@ -17,7 +17,7 @@
   sceneDemo({
     id: 'kashmir', title: 'Kashmir', year: '1993–94',
     desc: 'Diaporama : ' + scenes.length + ' images de la démo Kashmir (dont 12 à palette tournante). Le programme lui-même n\'a pas été retrouvé.',
-    source: 'CODE/demosour/kashmir/IMAGES/*.GIF · IMG_DIV/*',
+    source: 'DEMO/KASHMIR/ressources/IMAGES/*.GIF · IMG_DIV/*',
     scenes,
   });
 })();

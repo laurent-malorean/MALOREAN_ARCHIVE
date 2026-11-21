@@ -135,7 +135,7 @@
   sceneDemo({
     id: 'belladone', title: 'Belladone : Posseded To 3D', year: '1992',
     desc: 'Démo CGA 320×200 en 4 couleurs de Carle (août-septembre 1992), groupe Belladone : fractales précalculées (Mandelbrot) et objets 3D en fil de fer. Le source n\'existe plus : le code machine de DEMO1.EXE est exécuté par un interpréteur 8086 en JS, avec la bibliothèque de Turbo Pascal remplacée par du JS.',
-    source: 'DEMO/BELLADON/DEMO1.EXE (+ *.CGA, TRIGO.TBL)',
+    source: 'DEMO/BELLADONE/build/DEMO1.EXE (+ ressources/*.CGA, TRIGO.TBL)',
     extra(bar) {
       bar.insertAdjacentHTML('beforeend', '<label>Couleurs <select id="bpal"><option value="c0">CGAC0 vert/rouge/jaune</option><option value="c1">cyan/magenta/blanc</option></select></label>');
       bar.querySelector('#bpal').onchange = e => { pal.cur = e.target.value; };
