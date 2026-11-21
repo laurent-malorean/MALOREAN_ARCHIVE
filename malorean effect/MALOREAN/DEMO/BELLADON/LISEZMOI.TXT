@@ -1,0 +1,22 @@
+BELLADONE   : Posseded To 3D     Aout 1992
+
+
+La d‚mo "posseded to 3D" a ‚t‚ program‚e :
+
+	En mode CGA faute de posseder un materiel plus performant vous devez 
+        donc posseder une carte CGA ou une carte multistandar pour visionner 
+        cette demo.
+
+        Sur un AT 286 a 10 MHZ ,vous devez donc la visionner sur une frequence
+        de l'ordre  de 10 MHZ  (et mˆme inferieur sur les 386 & 486)  sinon la
+	demo d‚filera trop rapidement.
+
+
+Aucun Copywrite ne r‚git cette demo :le groupe Belladone en permet la copie et
+encourage une large diffusion de celle ci.
+
+Si vous voulez joindre Belladone ,‚crivez nous … :
+
+                              Belladone
+	              10 Route de Saint Pierre
+                            27430 Portejoie

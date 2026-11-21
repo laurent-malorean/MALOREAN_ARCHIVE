@@ -1,0 +1,26 @@
+De Thomas BASPEYRAS (56 Dom. de la Chartreuse, 27940 AUBEVOYE, 32.53.50.08)
+… Laurent DESECHALLIERS (Un mot que mon correcteur orthographique refuse de
+dig‚rer).
+
+Cette disquette contient:
+  * Un fichier ex‚cutable DEMOCUB5.EXE
+    - Qui pourra ˆtre all‚g‚ de l'unit‚ CRT attendu que KEYPRESSED peut ˆtre 
+      avantageusement remplac‚ par une interruption.
+    - Dont les proc‚dures d'accŠs disque se traŒnent lamentablement et ne
+      demande qu'… prendre leur retraite.
+    - Qui est programm‚ en Pascal et en Assembleur
+  * Deux fichiers au format SHOOT, GLOBE.BIT et DECOR.BIT
+    - Qui sont indispensables … l'ex‚cution de DEMOCUB5.EXE
+    - GLOBE.BIT pourrait ˆtre r‚duit de moiti‚
+  * Un fichier MOUVE.
+    - Qui est indispensable … l'ex‚cution de DEMOCUB5.EXE
+  * GALLERY.EXE de Deluxe Paint
+  * Le fichier associ‚ MONCYCLE.GAL
+  * Le dessin associ‚ CYCLE.LBM
+La copie sur disque dur est conseill‚e.
+Ma disquette s'appelle Reviens.
+
+                            En attente de votre r‚ponse,
+                       Je vous prie d'agr‚er l'expression distingu‚e
+                       de mes sentiments expressifs, etc, etc...
+
