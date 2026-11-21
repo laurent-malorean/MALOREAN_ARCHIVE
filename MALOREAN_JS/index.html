@@ -98,12 +98,15 @@ window.addEventListener('error', function (e) { var d = document.getElementById(
 <script src="data/gallery.js"></script>
 <script src="data/kashmir.js"></script>
 <script src="data/fortune.js"></script>
+<script src="data/belladone.js"></script>
 <script src="data/article.js"></script>
+<script src="data/fractals.js"></script>
 <script src="js/vga.js"></script>
 <script src="js/player.js"></script>
 <script src="js/modplayer.js"></script>
 <script src="js/textmode.js"></script>
 <script src="js/scenedemo.js"></script>
+<script src="js/x86.js"></script>
 <script src="demos/mat2_effects.js"></script>
 <script src="demos/mat3_scenes.js"></script>
 <script src="demos/mat2.js"></script>
@@ -116,15 +119,15 @@ window.addEventListener('error', function (e) { var d = document.getElementById(
 <script src="demos/strange.js"></script>
 <script src="demos/cube.js"></script>
 <script src="demos/fortune.js"></script>
+<script src="demos/belladone.js"></script>
 <script src="demos/kashmir.js"></script>
 <script src="demos/gallery.js"></script>
+<script src="demos/fractals.js"></script>
 <script src="demos/article.js"></script>
 <script>
 // Démos qui ont un source ou des données dans les archives mais pas encore de port.
-const TODO = [
-  ['Belladone', 'Possessed to 3D, 1992, CGA · EXE seul, moteur 3D à lire'],
-];
-const ORDER = ['mat1', 'mat2', 'mat3', 'mat5', 'mat6', 'allover', 'flan', 'fortune', 'strange', 'cube', 'kashmir', 'maths', 'galerie'];
+const TODO = [];
+const ORDER = ['mat1', 'mat2', 'mat3', 'mat5', 'mat6', 'allover', 'flan', 'fortune', 'belladone', 'strange', 'cube', 'kashmir', 'maths', 'galerie', 'fractales'];
 DEMOS.sort((a, b) => ORDER.indexOf(a.id) - ORDER.indexOf(b.id));
 const $ = id => document.getElementById(id), list = $('list'), stage = $('stage');
 let dispose = null;
